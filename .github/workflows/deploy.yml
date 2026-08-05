@@ -1,0 +1,39 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to project directory or clone if first run
+            if [ ! -d "taito" ]; then
+              git clone https://github.com/lilyblossm3-cloud/taito.git
+              cd taito
+            else
+              cd taito
+              git fetch origin
+            fi
+
+            # Checkout target branch
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
+
+            # Build and start services
+            docker compose down
+            docker compose up --build -d
