@@ -1,0 +1,8 @@
+{
+  "name": "taito-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "mkdir -p build && echo '<h1>Frontend React App Running!</h1>' > build/index.html"
+  },
+  "dependencies": {}
+}

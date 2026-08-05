@@ -1,5 +1,7 @@
 FROM node:18-alpine
 WORKDIR /app
-RUN echo 'const http = require("http"); http.createServer((req, res) => res.end("Backend API is running!")).listen(5000);' > server.js
+COPY package*.json ./
+RUN npm install
+COPY . .
 EXPOSE 5000
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
