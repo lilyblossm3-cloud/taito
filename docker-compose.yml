@@ -1,12 +1,16 @@
+version: '3.8'
+
 services:
   frontend:
     build: ./frontend
+    container_name: taito-frontend
     ports:
       - "8080:80"
     restart: always
 
   backend:
     build: ./backend
+    container_name: taito-backend
     ports:
       - "5000:5000"
     restart: always
