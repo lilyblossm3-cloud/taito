@@ -3,16 +3,14 @@ name: Deploy to Azure VM
 on:
   push:
     branches:
-      - main
-      - development
+      - release
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -21,18 +19,19 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Clone repo if missing, otherwise navigate into it
             if [ ! -d "taito" ]; then
               git clone https://github.com/lilyblossm3-cloud/taito.git
-              cd taito
-            else
-              cd taito
-              git fetch origin
             fi
-
+            
+            cd taito
+            
+            # Fetch latest branches and switch to release
+            git fetch origin
             git checkout ${{ github.ref_name }}
             git pull origin ${{ github.ref_name }}
 
-            # Disable Buildx/Bake to use standard docker engine build
+            # Disable BuildKit and deploy containers
             export DOCKER_BUILDKIT=0
             docker compose down
             docker compose up --build -d
