@@ -21,7 +21,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Navigate to project directory or clone if first run
             if [ ! -d "taito" ]; then
               git clone https://github.com/lilyblossm3-cloud/taito.git
               cd taito
@@ -30,10 +29,10 @@ jobs:
               git fetch origin
             fi
 
-            # Checkout target branch
             git checkout ${{ github.ref_name }}
             git pull origin ${{ github.ref_name }}
 
-            # Build and start services
+            # Disable Buildx/Bake to use standard docker engine build
+            export DOCKER_BUILDKIT=0
             docker compose down
             docker compose up --build -d
