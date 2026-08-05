@@ -1,12 +1,3 @@
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-EXPOSE 5000
-
-CMD ["npm", "start"]
+FROM nginx:alpine
+RUN echo "<h1>Frontend is Running!</h1>" > /usr/share/nginx/html/index.html
+EXPOSE 80
