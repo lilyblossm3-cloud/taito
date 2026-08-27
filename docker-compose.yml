@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: taito-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: taito
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
   frontend:
     build: ./frontend
     container_name: taito-frontend
@@ -13,4 +26,11 @@ services:
     container_name: taito-backend
     ports:
       - "5000:5000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@postgres:5432/taito?schema=public"
+    depends_on:
+      - postgres
     restart: always
+
+volumes:
+  postgres_data:
