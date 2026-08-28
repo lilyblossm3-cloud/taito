@@ -21,13 +21,13 @@ services:
       - "8080:80"
     restart: always
 
-  backend:
+    backend:
     build: ./backend
     container_name: taito-backend
     ports:
       - "5000:5000"
-    environment:
-      DATABASE_URL: "postgresql://postgres:password@postgres:5432/taito?schema=public"
+    env_file:
+      - ./backend/.env
     depends_on:
       - postgres
     restart: always
